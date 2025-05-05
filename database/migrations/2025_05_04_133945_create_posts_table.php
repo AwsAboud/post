@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->string('tags')->nullable();
-            $table->string('kewords')->nullable();
+            $table->string('keywords')->nullable();
             $table->string('meta_description');
             $table->text('body');
             $table->boolean('is_published')->default(false);

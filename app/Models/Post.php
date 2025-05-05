@@ -15,7 +15,7 @@ class Post extends Model
         'slug',
         'body',
         'is_published',
-        'publish_date',
+        'published_date',
         'meta_description',
         'tags',
         'keywords'
@@ -26,8 +26,9 @@ class Post extends Model
      */
     protected $casts = [
         'is_published' => 'boolean',
-        'publish_date' => 'datetime',
-        'tags' => 'array'
+        'published_date' => 'datetime',
+        'tags' => 'array',
+        'keywords' => 'array',
     ];
 
     /**
@@ -35,8 +36,8 @@ class Post extends Model
      */
     public function scopePublished($query)
     {
-        return $query->where('is_published', true)
-                     ->whereDate('publish_date', '<=', Carbon::today());
+        return $query->where('is_published', true);
+                     //->whereDate('published_date', '<=', Carbon::today());
     }
 
     /**

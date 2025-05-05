@@ -20,6 +20,9 @@ class UpdatePostRequest extends FormRequest
         return true;
     }
 
+     /**
+     * Prepare data for validation (runs before validation rules)
+     */
     public function prepareForValidation()
     {
         // Automatically generate a slug from the title if it is not provided in the request
@@ -64,7 +67,7 @@ class UpdatePostRequest extends FormRequest
             'body' => ['required', 'string', 'min:20','max:10000' ],
             'meta_description' => ['sometimes', 'string', 'min:10' , 'max:200'],
             'is_published' => ['sometimes', 'boolean'],
-            'publish_date' => [
+            'published_date' => [
                 'sometimes',
                 'date',
                 new FutureDate(),
@@ -76,6 +79,9 @@ class UpdatePostRequest extends FormRequest
         ];
     }
 
+    /**
+     * Custom validation error messages
+     */
     public function messages()
     {
         return[
@@ -85,11 +91,14 @@ class UpdatePostRequest extends FormRequest
             'slug.max' => 'The slug field may not be greater than :max characters.',
             'body.required' => 'The article content is required.',
             'is_published.boolean' => 'The is_published field must be true or false.',
-            'publish_date.date' => 'The publish date must be a valid date.',
+            'published_date.date' => 'The publish date must be a valid date.',
             'meta_description.max' => 'The meta description may not be greater than :max characters.',
         ];       
      }
 
+     /**
+     * Custom attribute names for error messages
+     */
      public function attributes()
      {
         return [
@@ -105,6 +114,9 @@ class UpdatePostRequest extends FormRequest
     }
 
 
+    /**
+     * Handle failed validation with custom JSON response
+     */
     protected function failedValidation(Validator $validator)
     {
         $response = response()->json([
@@ -113,5 +125,17 @@ class UpdatePostRequest extends FormRequest
         ], 422);
 
         throw new ValidationException($validator, $response);
+    }
+
+     /**
+     * Handle operations after successful validation
+     */
+    protected function passedValidation()
+    {
+        //Clean tags and keywords by trimming whitespace
+        $this->merge([
+            'tags' => array_map('trim', $this->validated('tags', [])),
+            'keywords' => array_map('trim', $this->validated('keywords', []))
+        ]);
     }
 }

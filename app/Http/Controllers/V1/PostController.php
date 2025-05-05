@@ -61,8 +61,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        $res = $this->service->delete($post);
-
-        return $this->successResponse(new PostResource($res), 20);
+        $this->service->delete($post);
+        
+        return $this->successResponse(null, code:204);
     }
 }
